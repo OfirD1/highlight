@@ -1,0 +1,91 @@
+/* ----------------- */
+/*  Sidebar Toggler  */
+/* ----------------- */
+
+#sidebarToggler {
+  float: right;
+  cursor: pointer;
+  position: fixed;
+  top: 0px;
+	right: 5px;
+	z-index: 2147483647;
+}
+
+/* ----------------- */
+/*      Sidebar      */
+/* ----------------- */
+
+#sidebar {
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  z-index: 2147483646;
+  width: 290px;
+  height: 100%;
+  background-color: #ECECEC;
+	transition: width 0.35s;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  direction: rtl;
+  box-shadow: 0px 1px 1px 0px rgba(0,0,0,.1);
+}
+#sidebar.collapsed {
+  width: 0;
+  overflow-y: hidden;
+  right: -20px; /* get it out of view */
+}
+.sidebar-row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+/* ----------------- */
+/*  Sidebar buttons  */
+/* ----------------- */
+
+#buttons {
+  position: fixed; 
+  width: inherit; 
+  overflow: hidden; 
+  padding: 15px 10px; 
+  height: 60px;
+  background: linear-gradient(to left, white 0%, 60%, #f6f6f6 160% );
+  box-shadow: 0 0 5px 0px white;
+}
+.btn-group .form-group {
+  padding: 10px;
+}
+.btn-group .form-group .fas {
+  font-size: 28px;
+}
+a {
+  font-size: 24px; 
+  padding: 5px 10px; 
+  cursor: pointer;
+}
+
+/* ----------------- */
+/*       Cards       */
+/* ----------------- */
+#cards {
+  overflow-y: auto; 
+  height: 100%; 
+  margin-top: 60px;
+  padding-bottom: 60px;
+}
+.card {
+  padding: 5px;
+  box-shadow: 0px 1px 1px 0px rgba(0,0,0,.1);
+  border-radius: 8px;
+  background-color: #fff;
+}
+.card:hover {
+  box-shadow: 0px 2px 3px 0px rgba(0,0,0,.15);
+  cursor: -webkit-grabbing;
+}
+.card:active {
+  cursor: -webkit-grabbing;
+}
+i {
+  cursor: pointer;
+}
