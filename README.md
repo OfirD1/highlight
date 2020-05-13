@@ -1,28 +1,17 @@
 # Highlight
 Highlight is a tool for highlighting text on any website, based on the [annotator.js](http://annotatorjs.org/) project.
 
-# Usage
+# :wrench: Usage
+
 Highlight can be used in 2 ways:  
-1. Chrome extension
-2. Standalone
 
-In both ways, it allows the following actions:
-1. Highlight text (using <kbd>ctrl</kbd>+<kbd>left mouse button</kbd>).
-2. Copy highlights to clipboard.
-
-The Chrome extension also allows to: 
-
-3. Save highlights.
-
-# :wrench: Installation
-
-## • Chrome extension  
+## 1. Chrome extension  
 Follow these steps to use Highlight as a Chrome extension:
    1. Download the repository and extract it  
    2. Go to Chrome's Extensions page, change it to Developer Mode  
    3. Click Load Unpacked to load the extracted folder.  
   
-## • Standalone  
+## 2. Standalone  
 Use the following html tags:  
 ```html
 <script src="libs/jquery-3.4.0/jquery.min.js"></script>
@@ -35,7 +24,7 @@ Use the following html tags:
 ```
 
 To see it in action locally, run `demo\demo.html` using [`serve`](https://www.npmjs.com/package/serve):
-1. `cd` into `demo`.
+1. Download the repository and extract it, then `cd` into it.
 2. If you have npm, run:  
 
    ```
@@ -48,6 +37,7 @@ To see it in action locally, run `demo\demo.html` using [`serve`](https://www.np
    serve
    ```
 3. load `demo.html`.
+
 
 # :rocket: Components
 Highlight is comprised of 2 components: 
