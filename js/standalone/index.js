@@ -1,11 +1,14 @@
 $(document).ready(function () {
-    var Sidebar = require('./sidebar.js');
-    var instance = new Sidebar();
-    if (instance.isChromeExtension) {
-        registerClickListener(instance);
-    } else {
-        instance.toggle();
-    }
+    var Sidebar = require("./sidebar.js");
+    $.getJSON("config.json", function (config) {
+        var instance = new Sidebar(config);
+        if (instance.isChromeExtension) {
+            registerClickListener(instance);
+        } else {
+            instance.toggle();
+        }
+    });
+    
 });
 
 function registerClickListener(Sidebar) {

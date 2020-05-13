@@ -681,12 +681,15 @@ module.exports = new Highlighter();
 
 $(document).ready(function () {
     var Sidebar = __webpack_require__(5);
-    var instance = new Sidebar();
-    if (instance.isChromeExtension) {
-        registerClickListener(instance);
-    } else {
-        instance.toggle();
-    }
+    $.getJSON("config.json", function (config) {
+        var instance = new Sidebar(config);
+        if (instance.isChromeExtension) {
+            registerClickListener(instance);
+        } else {
+            instance.toggle();
+        }
+    });
+    
 });
 
 function registerClickListener(Sidebar) {
@@ -706,12 +709,9 @@ function registerClickListener(Sidebar) {
 var Highlighter = __webpack_require__(1);
 var Storage = __webpack_require__(8);
 
-var Sidebar = function Sidebar() { 
+var Sidebar = function Sidebar(config) { 
     Sidebar.isInitialized = false;
-    Sidebar.options = { isChromeExtension: chrome.extension !== undefined };
-    $.getJSON(Sidebar.getResource("config.json"), function (customOptions) {
-        $.extend(true, Sidebar.options, customOptions)
-    });
+    Sidebar.options = $.extend(true, {}, { isChromeExtension: chrome.extension !== undefined }, config);
 };
 
 Sidebar.prototype.toggle = function () {
@@ -776,7 +776,7 @@ Sidebar.getSidebarHTML = function () {
     ]
     var sidebar =
         `<div id="sidebar" class="collapsed">\
-            <div id="buttons" class="text-left">\
+            <div id="buttons" class="text-${Sidebar.options.direction == "ltr" ? "right" : "left"}">\
                 <div class="btn-group">\
                     ${buttons.map(b => `<a id="${b.id}" class="${b.classes}" title="${b.label}"></a>`).join('')}
                 </div>\
@@ -790,9 +790,9 @@ Sidebar.getSidebarRowHTML = function (id) {
     var sidebarRow =
         `<div id=${id} class="row sidebar-row">\
             <div class="col-sm-12 my-2">\
-                <div class="card card-body px-2 py-2">\
+                <div class="card card-body">\
                     <span class="sidebar-row-content"></span>\
-                    <div class="text-left">\
+                    <div class="text-${Sidebar.options.direction == "ltr" ? "right" : "left"}">\
                         <div class="btn-group">\
                             <i id="delete" class="fas fa-trash" title="delete"></i>\
                         </div>\

@@ -43,6 +43,7 @@
     "libs/font-awesome-5.13.0/webfonts/fa-solid-900.woff2", 
     "libs/bootstrap-4.1.3/bootstrap.min.css",
     "libs/tippy-6.2.3/tippy.min.css",
-    "css/sidebar.css"
+    "css/sidebar.css",
+    "config.json"
   ]
 }
