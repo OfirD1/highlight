@@ -25,10 +25,25 @@ Follow these steps to use Highlight as a Chrome extension:
 ## • Standalone  
 Use the following html tags:  
 ```html
-<script src="highlight/js/standalone/dit/bundle.js" type="text/javascript"></script>
-<link href="highlight/css/sidebar.css" rel="stylesheet" />
-<link href="highlight/css/highlight.css" rel="stylesheet" />
+<script src="libs/jquery-3.4.0/jquery.min.js"></script>
+<script src="libs/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+<script src="libs/bootstrap-4.1.3/bootstrap.bundle.min.js"></script>
+<script src="libs/tippy-6.2.3/popper-2.4.0/popper.min.js"></script>
+<script src="libs/tippy-6.2.3/tippy.umd.min.js"></script>
+<script src="js/standalone/dist/bundle.js"></script>
+<link rel="stylesheet" type="text/css" href="css/highlight.css" />
 ```
+
+To see it in action locally, run `demo\demo.html` using [`serve`](https://www.npmjs.com/package/serve):
+1. `cd` into `demo`.
+2. If you have npm, run: 
+   `npx serve`
+   If you have yarn, run:
+   ```
+   yarn global add serve
+   serve
+   ```
+3. load `demo.html`.
 
 # :rocket: Components
 Highlight is comprised of 2 components: 

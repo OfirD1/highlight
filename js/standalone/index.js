@@ -1,12 +1,11 @@
 $(document).ready(function () {
-    var options = { 
-        cssClass: 'highlight', 
-        direction: 'rtl', 
-        useCtrlKey: true,
-        isChromeExtension: true 
-    };
     var Sidebar = require('./sidebar.js');
-    registerClickListener(new Sidebar(options));
+    var instance = new Sidebar();
+    if (instance.isChromeExtension) {
+        registerClickListener(instance);
+    } else {
+        instance.toggle();
+    }
 });
 
 function registerClickListener(Sidebar) {

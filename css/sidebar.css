@@ -38,6 +38,9 @@
   margin-left: 0px;
   margin-right: 0px;
 }
+.sidebar-row-content {
+  font-size: 16px;
+}
 
 /* ----------------- */
 /*  Sidebar buttons  */

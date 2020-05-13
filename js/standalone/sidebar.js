@@ -1,9 +1,12 @@
 var Highlighter = require('./highlighter.js');
 var Storage = require('./storage.js');
 
-var Sidebar = function Sidebar(options) { 
-    Sidebar.options = $.extend(true, {}, options);
+var Sidebar = function Sidebar() { 
     Sidebar.isInitialized = false;
+    Sidebar.options = { isChromeExtension: chrome.extension !== undefined };
+    $.getJSON(Sidebar.getResource("config.json"), function (customOptions) {
+        $.extend(true, Sidebar.options, customOptions)
+    });
 };
 
 Sidebar.prototype.toggle = function () {
@@ -68,7 +71,7 @@ Sidebar.getSidebarHTML = function () {
     ]
     var sidebar =
         `<div id="sidebar" class="collapsed">\
-            <div id="buttons" class="text-left" style="direction: ${Sidebar.options.direction};">\
+            <div id="buttons" class="text-left">\
                 <div class="btn-group">\
                     ${buttons.map(b => `<a id="${b.id}" class="${b.classes}" title="${b.label}"></a>`).join('')}
                 </div>\
@@ -83,7 +86,7 @@ Sidebar.getSidebarRowHTML = function (id) {
         `<div id=${id} class="row sidebar-row">\
             <div class="col-sm-12 my-2">\
                 <div class="card card-body px-2 py-2">\
-                    <span class="content"></span>\
+                    <span class="sidebar-row-content"></span>\
                     <div class="text-left">\
                         <div class="btn-group">\
                             <i id="delete" class="fas fa-trash" title="delete"></i>\
@@ -109,6 +112,7 @@ Sidebar.init = function () {
     Sidebar.initToggler();
     Sidebar.initButtons();
     Sidebar.initCards();
+    Sidebar.setPosition();
 }
 
 /* ------------------------------------- */
@@ -165,15 +169,17 @@ Sidebar.initButtons = function () {
     $buttons = $(Sidebar.shadowRoot.querySelector('#buttons'));
     $buttons.find("#saver").on("click", function (e) { Sidebar.save(Sidebar.showTooltip(e.target)); });
     $buttons.find("#copier").on("click", function (e) { Sidebar.copyToClipboard(Sidebar.showTooltip(e.target)); });
-    $buttons.find("#flipper").on("click", Sidebar.flipDirection);
+    $buttons.find("#flipper").on("click", Sidebar.setPosition);
 };
 Sidebar.save = function (callback) {
-    Storage.save(Storage.storageType.chrome, Sidebar.options.cssClass, callback);
+    if (Sidebar.isChromeExtension) {
+        Storage.save(Storage.storageType.chrome, Sidebar.options.cssClass, callback);
+    }
 };
 Sidebar.copyToClipboard = function (callback) {
     var contents =
         $(Sidebar.shadowRoot.querySelector("#sidebar"))
-            .find(".content")
+            .find(".sidebar-row-content")
             .toArray()
             .map(s => $(s).text())
             .join(" ")
@@ -185,7 +191,7 @@ Sidebar.copyToClipboard = function (callback) {
     $temp.remove();
     callback();
 };
-Sidebar.flipDirection = function () {
+Sidebar.setPosition = function () {
     var $sidebar = Sidebar.shadowRoot.querySelector("#sidebar");
     var $sidebarToggle = Sidebar.shadowRoot.querySelector("#sidebarToggler");
     var currentDirection = Sidebar.options.direction; //window.getComputedStyle($sidebar).getPropertyValue('direction');
@@ -256,7 +262,7 @@ Sidebar.addRow = function (highlightedText, id) {
     $sidebar.appendChild($sidebarRow[0]);
 };
 Sidebar.initSidebarRow = function ($sidebarRow, highlightedText) {
-    $sidebarRow.find(".content").text(highlightedText);
+    $sidebarRow.find(".sidebar-row-content").text(highlightedText);
     $sidebarRow.on('click', Sidebar.scrollIntoView);
     $sidebarRow.find('#delete').on('click', Sidebar.deleteRow);
 };
@@ -311,14 +317,16 @@ Sidebar.isInside = function (selection) {
 /* ------------------------------- */
 
 Sidebar.load = function (shouldAddRows) {
-    Storage.load(Storage.storageType.chrome, Sidebar.options.cssClass, function (rangeDatas) {
-        if (shouldAddRows) {
-            rangeDatas.forEach(function (rangeData) {
-                var range = rangeData.ranges[0]; // there would always be a single range coming from storage
-                Sidebar.addRow(range.text(), rangeData.id);
-            })
-        }
-    });
+    if (Sidebar.isChromeExtension) {
+        Storage.load(Storage.storageType.chrome, Sidebar.options.cssClass, function (rangeDatas) {
+            if (shouldAddRows) {
+                rangeDatas.forEach(function (rangeData) {
+                    var range = rangeData.ranges[0]; // there would always be a single range coming from storage
+                    Sidebar.addRow(range.text(), rangeData.id);
+                })
+            }
+        });
+    }
 };
 Sidebar.unload = function () {
     Highlighter.removeHighlightsByClass(Sidebar.options.cssClass);
