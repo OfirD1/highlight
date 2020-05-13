@@ -36,9 +36,13 @@ Use the following html tags:
 
 To see it in action locally, run `demo\demo.html` using [`serve`](https://www.npmjs.com/package/serve):
 1. `cd` into `demo`.
-2. If you have npm, run: 
-   `npx serve`
-   If you have yarn, run:
+2. If you have npm, run:  
+
+   ```
+   npx serve  
+   ```
+   If you have yarn, run:  
+   
    ```
    yarn global add serve
    serve
