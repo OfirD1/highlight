@@ -1,6 +1,8 @@
 # Highlight
 Highlight is a tool for highlighting text on any website, based on the [annotator.js](http://annotatorjs.org/) project.
 
+ ![demo](gif/highlight.gif)
+
 # :wrench: Usage
 
 Highlight can be used in 2 ways:  
