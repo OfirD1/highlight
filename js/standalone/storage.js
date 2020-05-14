@@ -40,7 +40,12 @@ Storage.prototype.load = function (storageType, url, cssClass, onSuccess) {
 };
 
 Storage.saveToChrome = function (url, toSave, callback) {
-    chrome.storage.sync.set({ [Storage.getKey(url)]: JSON.stringify(toSave) }, callback);
+    var key = Storage.getKey(url);
+    if (toSave.length) {
+        chrome.storage.sync.set({ [key]: JSON.stringify(toSave) }, callback);
+    } else {
+        chrome.storage.sync.remove([key], function (removedItems) {}); 
+    }
 };
 Storage.loadFromChrome = function (url, cssClass, onSuccess) {
     var key = Storage.getKey(url)
