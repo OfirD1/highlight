@@ -171,7 +171,7 @@ Sidebar.initButtons = function () {
 };
 Sidebar.save = function (callback) {
     if (Sidebar.isChromeExtension) {
-        Storage.save(Storage.storageType.chrome, Sidebar.config.cssClass, callback);
+        Storage.save(Storage.storageType.chrome, window.location.toString(), Sidebar.config.cssClass, callback);
     }
 };
 Sidebar.copyToClipboard = function (callback) {
@@ -318,7 +318,7 @@ Sidebar.isInside = function (selection) {
 
 Sidebar.load = function (shouldAddRows) {
     if (Sidebar.isChromeExtension) {
-        Storage.load(Storage.storageType.chrome, Sidebar.config.cssClass, function (rangeDatas) {
+        Storage.load(Storage.storageType.chrome, window.location.toString(), Sidebar.config.cssClass, function (rangeDatas) {
             if (shouldAddRows) {
                 rangeDatas.forEach(function (rangeData) {
                     var range = rangeData.ranges[0]; // there would always be a single range coming from storage

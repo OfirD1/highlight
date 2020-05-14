@@ -878,7 +878,7 @@ Sidebar.initButtons = function () {
 };
 Sidebar.save = function (callback) {
     if (Sidebar.isChromeExtension) {
-        Storage.save(Storage.storageType.chrome, Sidebar.config.cssClass, callback);
+        Storage.save(Storage.storageType.chrome, window.location.toString(), Sidebar.config.cssClass, callback);
     }
 };
 Sidebar.copyToClipboard = function (callback) {
@@ -1025,7 +1025,7 @@ Sidebar.isInside = function (selection) {
 
 Sidebar.load = function (shouldAddRows) {
     if (Sidebar.isChromeExtension) {
-        Storage.load(Storage.storageType.chrome, Sidebar.config.cssClass, function (rangeDatas) {
+        Storage.load(Storage.storageType.chrome, window.location.toString(), Sidebar.config.cssClass, function (rangeDatas) {
             if (shouldAddRows) {
                 rangeDatas.forEach(function (rangeData) {
                     var range = rangeData.ranges[0]; // there would always be a single range coming from storage
@@ -1384,13 +1384,11 @@ Storage.prototype.storageType = {
     file: 2     // not yet implemented
 }
 
-Storage.key = "rangesData";
-
-Storage.prototype.save = function (storageType, cssClass, callback) {
-    var rangeDatas = Highlighter.getHighlightsFromDOM(cssClass);
+Storage.prototype.save = function (storageType, url, cssClass, callback) {
+    var rangesData = Highlighter.getHighlightsFromDOM(cssClass);  
     switch (storageType) {
         case (Storage.prototype.storageType.chrome): {
-            Storage.saveToChrome(rangeDatas, callback);
+            Storage.saveToChrome(url, rangesData, callback);
             break;
         }
         case (Storage.prototype.storageType.file): {
@@ -1401,11 +1399,11 @@ Storage.prototype.save = function (storageType, cssClass, callback) {
             break;
     }
 };
-Storage.prototype.load = function (storageType, cssClass, onSuccess) {
+Storage.prototype.load = function (storageType, url, cssClass, onSuccess) {
     var ranges = []
     switch (storageType) {
         case (Storage.prototype.storageType.chrome): {
-            ranges = Storage.loadFromChrome(cssClass, onSuccess);
+            ranges = Storage.loadFromChrome(url, cssClass, onSuccess);
             break;
         }
         case (Storage.prototype.storageType.file): {
@@ -1418,13 +1416,14 @@ Storage.prototype.load = function (storageType, cssClass, onSuccess) {
     return ranges;
 };
 
-Storage.saveToChrome = function (rangeDatas, callback) {
-    chrome.storage.sync.set({ [Storage.key]: JSON.stringify(rangeDatas) }, callback);
+Storage.saveToChrome = function (url, toSave, callback) {
+    chrome.storage.sync.set({ [Storage.getKey(url)]: JSON.stringify(toSave) }, callback);
 };
-Storage.loadFromChrome = function (cssClass, onSuccess) {
-    chrome.storage.sync.get([Storage.key], function (result) {
-        var stored = result[Storage.key];
-        if (stored) {
+Storage.loadFromChrome = function (url, cssClass, onSuccess) {
+    var key = Storage.getKey(url)
+    chrome.storage.sync.get([key], function (result) {
+        if (!$.isEmptyObject(result)) {
+            var stored = result[key];
             var ranges = JSON.parse(stored).map(function (rangeData) {
                 return Highlighter.highlight({ xpathOffset: rangeData }, cssClass);
             });
@@ -1433,6 +1432,11 @@ Storage.loadFromChrome = function (cssClass, onSuccess) {
             console.log('no saved highlights');
         }
     });
+}
+
+Storage.getKey = function (url) {
+    const keySuffix = "rangesData";
+    return [url, keySuffix].join('/');
 }
 
 module.exports = new Storage();
