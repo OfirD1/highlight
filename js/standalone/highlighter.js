@@ -80,13 +80,16 @@ Highlighter.captureDocumentSelection = function (selection) {
     }
 
     // Add normed ranges back to the selection
-    for (i = 0, len = ranges.length; i < len; i++) {
-        var range = ranges[i],
-            drange = document.createRange();
-        drange.setStartBefore(range.start);
-        drange.setEndAfter(range.end);
-        selection.addRange(drange);
-    }
+    // my comment: I think we don't want to reapply the selection,
+    // but simply "replace" it with a highlight; hence I'm removing 
+    // this code for now.
+    // for (i = 0, len = ranges.length; i < len; i++) {
+    //     var range = ranges[i],
+    //         drange = document.createRange();
+    //     drange.setStartBefore(range.start);
+    //     drange.setEndAfter(range.end);
+    //     selection.addRange(drange);
+    // }
 
     return ranges;
 };
