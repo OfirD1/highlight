@@ -681,9 +681,9 @@ module.exports = new Highlighter();
 
 $(document).ready(function () {
     var Sidebar = __webpack_require__(5);
-    $.getJSON("config.json", function (config) {
+    $.getJSON(Sidebar.getResource("config.json"), function (config) {
         var instance = new Sidebar(config);
-        if (instance.isChromeExtension) {
+        if (Sidebar.isChromeExtension) {
             registerClickListener(instance);
         } else {
             instance.toggle();
@@ -691,7 +691,6 @@ $(document).ready(function () {
     });
     
 });
-
 function registerClickListener(Sidebar) {
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (msg.toggle) {
@@ -710,9 +709,10 @@ var Highlighter = __webpack_require__(1);
 var Storage = __webpack_require__(8);
 
 var Sidebar = function Sidebar(config) { 
-    Sidebar.isInitialized = false;
-    Sidebar.options = $.extend(true, {}, { isChromeExtension: chrome.extension !== undefined }, config);
+    Sidebar.config = $.extend(true, {}, config);
 };
+Sidebar.isInitialized = false;
+Sidebar.isChromeExtension = chrome && chrome.extension;
 
 Sidebar.prototype.toggle = function () {
     var shouldInit = !Sidebar.isInitialized;
@@ -776,7 +776,7 @@ Sidebar.getSidebarHTML = function () {
     ]
     var sidebar =
         `<div id="sidebar" class="collapsed">\
-            <div id="buttons" class="text-${Sidebar.options.direction == "ltr" ? "right" : "left"}">\
+            <div id="buttons" class="text-${Sidebar.config.direction == "ltr" ? "right" : "left"}">\
                 <div class="btn-group">\
                     ${buttons.map(b => `<a id="${b.id}" class="${b.classes}" title="${b.label}"></a>`).join('')}
                 </div>\
@@ -792,7 +792,7 @@ Sidebar.getSidebarRowHTML = function (id) {
             <div class="col-sm-12 my-2">\
                 <div class="card card-body">\
                     <span class="sidebar-row-content"></span>\
-                    <div class="text-${Sidebar.options.direction == "ltr" ? "right" : "left"}">\
+                    <div class="text-${Sidebar.config.direction == "ltr" ? "right" : "left"}">\
                         <div class="btn-group">\
                             <i id="delete" class="fas fa-trash" title="delete"></i>\
                         </div>\
@@ -803,7 +803,7 @@ Sidebar.getSidebarRowHTML = function (id) {
     return sidebarRow;
 };
 Sidebar.getResource = function (path) {
-    if (Sidebar.options.isChromeExtension) {
+    if (Sidebar.isChromeExtension) {
         path = chrome.extension.getURL(path);
     }
     return path;
@@ -878,7 +878,7 @@ Sidebar.initButtons = function () {
 };
 Sidebar.save = function (callback) {
     if (Sidebar.isChromeExtension) {
-        Storage.save(Storage.storageType.chrome, Sidebar.options.cssClass, callback);
+        Storage.save(Storage.storageType.chrome, Sidebar.config.cssClass, callback);
     }
 };
 Sidebar.copyToClipboard = function (callback) {
@@ -899,13 +899,13 @@ Sidebar.copyToClipboard = function (callback) {
 Sidebar.setPosition = function () {
     var $sidebar = Sidebar.shadowRoot.querySelector("#sidebar");
     var $sidebarToggle = Sidebar.shadowRoot.querySelector("#sidebarToggler");
-    var currentDirection = Sidebar.options.direction; //window.getComputedStyle($sidebar).getPropertyValue('direction');
+    var currentDirection = Sidebar.config.direction; //window.getComputedStyle($sidebar).getPropertyValue('direction');
     var fromTo = currentDirection === 'ltr' ?
         { currentPosition: 'left', toPosition: 'right', direction: 'rtl' } :
         { currentPosition: 'right', toPosition: 'left', direction: 'ltr' };
 
     // 1.a set sidebar's direction property
-    Sidebar.options.direction = fromTo.direction;
+    Sidebar.config.direction = fromTo.direction;
     // 1.a. flip sidebar's direction
     $sidebar.style.direction = fromTo.direction;
     // 1.b. flip sidebar's position 
@@ -995,13 +995,15 @@ Sidebar.initHighlighter = function () {
         // note: if you're debugging, make sure you don't press the debugger's '>' button ('resume script execution') 
         // that appears on top of the viewport, as this will count as another 'mouseup' event and will cause strange results.
         var isCtrlPressed = e.ctrlKey;
-        if (!Sidebar.options.useCtrlKey || isCtrlPressed) {
+        if (!Sidebar.config.useCtrlKey || isCtrlPressed) {
             var selection = Highlighter.getSelection();
             if (!Sidebar.isInside(selection) && selection.toString() != "") {
-                var rangesData = Highlighter.highlight({ selection: selection }, Sidebar.options.cssClass);
-                Sidebar.addRow(rangesData.ranges[0].text(), rangesData.id);
+                var rangesData = Highlighter.highlight({ selection: selection }, Sidebar.config.cssClass);
+                // rangesData.ranges.length would be 0 e.g. if a selection was made inside an <input>
+                if (rangesData.ranges.length) {
+                    Sidebar.addRow(rangesData.ranges[0].text(), rangesData.id);
+                }
             }
-            selection.removeAllRanges();
         }
     });
 };
@@ -1023,7 +1025,7 @@ Sidebar.isInside = function (selection) {
 
 Sidebar.load = function (shouldAddRows) {
     if (Sidebar.isChromeExtension) {
-        Storage.load(Storage.storageType.chrome, Sidebar.options.cssClass, function (rangeDatas) {
+        Storage.load(Storage.storageType.chrome, Sidebar.config.cssClass, function (rangeDatas) {
             if (shouldAddRows) {
                 rangeDatas.forEach(function (rangeData) {
                     var range = rangeData.ranges[0]; // there would always be a single range coming from storage
@@ -1034,7 +1036,7 @@ Sidebar.load = function (shouldAddRows) {
     }
 };
 Sidebar.unload = function () {
-    Highlighter.removeHighlightsByClass(Sidebar.options.cssClass);
+    Highlighter.removeHighlightsByClass(Sidebar.config.cssClass);
 };
 
 module.exports = Sidebar;
@@ -1386,19 +1388,17 @@ Storage.key = "rangesData";
 
 Storage.prototype.save = function (storageType, cssClass, callback) {
     var rangeDatas = Highlighter.getHighlightsFromDOM(cssClass);
-    if (rangeDatas.length) {
-        switch (storageType) {
-            case (Storage.prototype.storageType.chrome): {
-                Storage.saveToChrome(rangeDatas, callback);
-                break;
-            }
-            case (Storage.prototype.storageType.file): {
-                throw new Error("not yet implemented");
-                break;
-            }
-            default:
-                break;
+    switch (storageType) {
+        case (Storage.prototype.storageType.chrome): {
+            Storage.saveToChrome(rangeDatas, callback);
+            break;
         }
+        case (Storage.prototype.storageType.file): {
+            throw new Error("not yet implemented");
+            break;
+        }
+        default:
+            break;
     }
 };
 Storage.prototype.load = function (storageType, cssClass, onSuccess) {

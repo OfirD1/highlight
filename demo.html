@@ -3,15 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Highlight demo</title>
-    <script src="libs/jquery-3.4.0/jquery.min.js"></script>
-    <script src="libs/jquery-ui-1.12.1/jquery-ui.min.js"></script>
-    <script src="libs/bootstrap-4.1.3/bootstrap.bundle.min.js"></script>
-    <script src="libs/tippy-6.2.3/popper-2.4.0/popper.min.js"></script>
-    <script src="libs/tippy-6.2.3/tippy.umd.min.js"></script>
-    <script src="js/standalone/dist/bundle.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <style>
-        body {
+        body, input {
           font-family: Georgia, Cambria, "Times New Roman", Times, serif;
           letter-spacing: 0.01rem;
           font-size: 22px;
@@ -19,9 +12,13 @@
           text-rendering: optimizeLegibility;
           -webkit-font-smoothing: antialiased;
         }
-        header, article {
+        header, article, input {
           width: 640px;
           margin: 2em auto;
+        }
+        input {
+          padding-left: 5px;
+          margin: 0;
         }
     </style>
   </head>
@@ -32,16 +29,12 @@
     </header>
     <article>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed maximus ante eget nibh tincidunt, vel lobortis sapien
-        rutrum. Donec in faucibus purus. Suspendisse tincidunt orci ac sem mattis, sed gravida nisi sodales. Pellentesque sed mi
-        ac est commodo porta et dignissim lectus. Sed viverra tempor nunc, a condimentum lectus porta ut. Class aptent taciti
-        sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce id sem blandit, sodales nunc quis,
-        volutpat eros. Donec consectetur turpis facilisis mauris imperdiet, a consequat nisl porta. Nunc id suscipit quam.
-        Mauris in ultricies velit. Fusce ut tellus ut tortor rhoncus cursus. Mauris nibh ligula, hendrerit id aliquet eget,
-        euismod id ipsum. Vestibulum tristique scelerisque sapien, sed vulputate felis congue nec. Curabitur efficitur massa
-        sapien, ac sagittis metus auctor sit amet. Proin purus lectus, molestie quis porttitor non, placerat ac nisi. Nullam
-        convallis euismod mi eu efficitur.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo varius ipsum, ut maximus odio consectetur non.
+        Aliquam erat volutpat. Etiam consectetur ultrices eleifend. Nam tempus, lorem nec suscipit euismod, ex orci sodales
+        arcu, sed maximus nisi enim id lacus. Fusce ultrices nunc mi, efficitur tempus velit rhoncus sit amet. Vivamus odio dui,
+        fringilla id libero ut, lobortis posuere enim. 
       </p>
+      <input />
       <p>
         Sed risus dolor, maximus eget lorem vel, euismod finibus lorem. Nulla luctus quam a quam accumsan auctor. Morbi
         consectetur ex massa, sed sagittis lectus aliquam nec. Nunc quis orci leo. Proin vestibulum eget dolor tincidunt

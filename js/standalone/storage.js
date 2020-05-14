@@ -11,19 +11,17 @@ Storage.key = "rangesData";
 
 Storage.prototype.save = function (storageType, cssClass, callback) {
     var rangeDatas = Highlighter.getHighlightsFromDOM(cssClass);
-    if (rangeDatas.length) {
-        switch (storageType) {
-            case (Storage.prototype.storageType.chrome): {
-                Storage.saveToChrome(rangeDatas, callback);
-                break;
-            }
-            case (Storage.prototype.storageType.file): {
-                throw new Error("not yet implemented");
-                break;
-            }
-            default:
-                break;
+    switch (storageType) {
+        case (Storage.prototype.storageType.chrome): {
+            Storage.saveToChrome(rangeDatas, callback);
+            break;
         }
+        case (Storage.prototype.storageType.file): {
+            throw new Error("not yet implemented");
+            break;
+        }
+        default:
+            break;
     }
 };
 Storage.prototype.load = function (storageType, cssClass, onSuccess) {
