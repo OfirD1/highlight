@@ -945,7 +945,7 @@ Sidebar.showTooltip = function (element) {
     })
     return function () {
         tip.show()
-        setTimeout(function () { tip.hide(); tip.destroy(); }, 2000);
+        setTimeout(function () { tip.hide(); tip.destroy(); }, 100000);
     }
 }
 
@@ -1424,8 +1424,7 @@ Storage.saveToChrome = function (url, toSave, callback) {
     if (toSave.length) {
         chrome.storage.sync.set({ [key]: JSON.stringify(toSave) }, callback);
     } else {
-        chrome.storage.sync.remove([key], function (Items) {
-        }); 
+        chrome.storage.sync.remove([key], function (removedItems) {}); 
     }
 };
 Storage.loadFromChrome = function (url, cssClass, onSuccess) {
