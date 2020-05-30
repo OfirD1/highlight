@@ -78,3 +78,4 @@ In case you're making changes to the javascript code, you'd need to compile usin
 # :link: Similar Projects
 - [hypothesis.io](https://github.com/hypothesis/h)
 - [web-highlighter](https://github.com/alienzhou/web-highlighter)
+- [rough notation](https://roughnotation.com/)
