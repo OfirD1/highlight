@@ -1,5 +1,5 @@
 # Highlight
-Highlight is a tool for highlighting text on any website, based on the [annotator.js](http://annotatorjs.org/) project.
+Highlight is a Chrome extension and a standalone tool for highlighting text on any website for highlighting text on any website, based on the [annotator.js](http://annotatorjs.org/) project.
 
  ![demo](gif/highlight.gif)
 
@@ -78,3 +78,4 @@ In case you're making changes to the javascript code, you'd need to compile usin
 # :link: Similar Projects
 - [hypothesis.io](https://github.com/hypothesis/h)
 - [web-highlighter](https://github.com/alienzhou/web-highlighter)
+- [rough notation](https://roughnotation.com/)
